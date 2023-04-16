@@ -5,6 +5,7 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
 
@@ -26,9 +27,14 @@ public class GuideAgent {
                     Advice.to(TracingAdvice.class)
                             .on(ElementMatchers.isMethod()
                                     .and(ElementMatchers.any()).and(ElementMatchers.not(ElementMatchers.nameStartsWith("main")))));
+
+            builder.method(ElementMatchers.named("invokeForRequest"));
             return builder;
         };
-        agentBuilder = agentBuilder.type(ElementMatchers.nameStartsWith("com.atu.provider")).transform(transformer).asDecorator();
+
+        agentBuilder = agentBuilder.type(ElementMatchers.named("org.springframework.web.method.support.InvocableHandlerMethod"))
+
+                .transform(transformer).asDecorator();
 
         //监听
         AgentBuilder.Listener listener = new AgentBuilder.Listener() {
