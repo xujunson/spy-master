@@ -19,12 +19,12 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <slf4j-version>2.0.0</slf4j-version>
         <aspectj-version>1.8.13</aspectj-version>
-        <bytebuddy-version>1.8.20</bytebuddy-version>
+        <bytebuddy-version>1.10.21</bytebuddy-version>
         <ttl-version>2.12.2</ttl-version>
         <hutool-core-version>5.8.6</hutool-core-version>
         <commons-version>3.12.0</commons-version>
         <tec-version>8.5.34</tec-version>
-        <spring.version>5.2.20.RELEASE</spring.version>
+        <spring-version>5.2.20.RELEASE</spring-version>
     </properties>
 
     <dependencyManagement>
@@ -60,7 +60,11 @@
                 <artifactId>tomcat-embed-core</artifactId>
                 <version>${tec-version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <main.class.path>com.atu.agent.GuideAgent</main.class.path>
     </properties>
 
     <dependencies>
@@ -63,14 +64,13 @@
                     <archive>
                         <!-- 设置manifest配置文件-->
                         <manifestEntries>
-                            <!--Premain-Class: 代表 Agent 静态加载时会调用的类全路径名。-->
-                            <Premain-Class>com.atu.agent.GuideAgent</Premain-Class>
-                            <!--Agent-Class: 代表 Agent 动态加载时会调用的类全路径名。-->
-                            <Agent-Class>com.atu.agent.GuideAgent</Agent-Class>
-                            <!--Can-Redefine-Classes: 是否可进行类定义。-->
+                            <Premain-Class>${main.class.path}</Premain-Class>
+                            <Boot-Class-Path>${project.artifactId}-${project.version}.jar</Boot-Class-Path>
+                            <Agent-Class>${main.class.path}</Agent-Class>
                             <Can-Redefine-Classes>true</Can-Redefine-Classes>
-                            <!--Can-Retransform-Classes: 是否可进行类转换。-->
                             <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                            <Can-Set-Native-Method-Prefix>false</Can-Set-Native-Method-Prefix>
+
                         </manifestEntries>
                     </archive>
                 </configuration>

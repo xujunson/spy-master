@@ -9,7 +9,7 @@ import com.alibaba.ttl.TransmittableThreadLocal;
  **/
 public class TraceContextHolder {
 
-    private static final TransmittableThreadLocal<String> traceIdTL = new TransmittableThreadLocal<>();
+    public static final TransmittableThreadLocal<String> traceIdTL = new TransmittableThreadLocal<>();
 
     private static final TransmittableThreadLocal<String> preIvkAppTL = new TransmittableThreadLocal<>();
 

@@ -1,4 +1,4 @@
-package com.atu.aop;
+package com.atu.transformer;
 
 import com.alibaba.ttl.threadpool.agent.internal.javassist.*;
 
@@ -22,19 +22,13 @@ public class ForkJoinPoolTransformer implements TraceTransformer {
         String className = clazz.getName();
         //添加context$field$add$by$trace字段,初始值为TraceContext.getContext(),这样就获取了调用线程的上下文
         CtField contextField = CtField.make("private final java.lang.Object context$field$add$by$trace;", clazz);
-        clazz.addField(contextField, "com.ezlippi.trace.agent.context.TraceContext.getContext();");
+        clazz.addField(contextField, "com.atu.context.TraceContext.getContext();");
         System.out.println("add new field context$field$add$by$trace to class " + className);
         CtMethod doExecMethod = clazz.getDeclaredMethod("doExec");
-        CtMethod newDoExecMethod = CtNewMethod.copy(doExecMethod, "doExec", clazz, (ClassMap)null);
+        CtMethod newDoExecMethod = CtNewMethod.copy(doExecMethod, "doExec", clazz, null);
         doExecMethod.setName("original$doExec$method$renamed$by$trace");
         doExecMethod.setModifiers(doExecMethod.getModifiers() & -2 | 2);
-        //java.lang.Object backup = com.ezlippi.trace.agent.context.TraceContextUtil.backupAndSet(this.context$field$add$by$trace);
-        //try {
-        //   return original$doExec$method$renamed$by$trace($$);
-        //} finally {
-        //    TraceContextUtil.restoreBackup(backup);
-        //}
-        newDoExecMethod.setBody("{\njava.lang.Object backup = com.ezlippi.trace.agent.context.TraceContextUtil.backupAndSet(context$field$add$by$trace);\ntry {\n    return original$doExec$method$renamed$by$trace($$);\n} finally {\n    com.ezlippi.trace.agent.context.TraceContextUtil.restoreBackup(backup);\n}\n}");
+        newDoExecMethod.setBody("{\njava.lang.Object backup = com.atu.common.utils.TraceContextUtil.backupAndSet(context$field$add$by$trace);\ntry {\n    return original$doExec$method$renamed$by$trace($$);\n} finally {\n    com.atu.common.utils.TraceContextUtil.restoreBackup(backup);\n}\n}");
         clazz.addMethod(newDoExecMethod);
         System.out.println("insert code around method " + doExecMethod + " of class " + className);
 

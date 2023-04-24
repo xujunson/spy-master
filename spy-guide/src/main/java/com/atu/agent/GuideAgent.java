@@ -1,17 +1,22 @@
 package com.atu.agent;
 
-import com.atu.aop.TlTransformer;
 import com.atu.aop.TracingAdvice;
+import com.atu.transformer.TlTransformer;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
-import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
+import java.util.jar.JarFile;
+
+import static net.bytebuddy.matcher.ElementMatchers.isMethod;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
 /**
  * @author: Tom
@@ -20,23 +25,51 @@ import java.lang.instrument.Instrumentation;
  **/
 public class GuideAgent {
 
-   /* public static void premain(String agentArgs, Instrumentation inst) {
-        System.out.println("this is my agent：" + agentArgs);
+    private static final String transmittableJar = "D:/maven/repository/com/alibaba/transmittable-thread-local/2.12.2/transmittable-thread-local-2.12.2.jar";
+    private static final String bytebuddyJar = "D:/maven/repository/net/bytebuddy/byte-buddy/1.10.21/byte-buddy-1.10.21.jar";
+
+    public static void premain(String agentArgs, Instrumentation instrumentation) {
+
+        System.out.println(">>>>>>> agent 启动...");
+        // 使用启动类加载器load
+        File transmittableFile = new File(transmittableJar);
+        if (!transmittableFile.exists()) {
+            System.out.println("transmittableFile does not exist: " + transmittableFile);
+            return;
+        }
+        File bytebuddyFile = new File(bytebuddyJar);
+        if (!bytebuddyFile.exists()) {
+            System.out.println("bytebuddyFile does not exist: " + bytebuddyFile);
+            return;
+        }
+        // 使用启动类加载器加载
+        try {
+            instrumentation.appendToBootstrapClassLoaderSearch(new JarFile(transmittableFile));
+            instrumentation.appendToBootstrapClassLoaderSearch(new JarFile(bytebuddyFile));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         AgentBuilder agentBuilder = new AgentBuilder.Default();
+        handleTraceId(instrumentation, agentBuilder);
+
+        ClassFileTransformer transformer = new TlTransformer();
+        instrumentation.addTransformer(transformer, true);
+    }
+
+    private static void handleTraceId(Instrumentation instrumentation, AgentBuilder agentBuilder) {
 
         AgentBuilder.Transformer transformer = (builder, typeDescription, classLoader, javaModule) -> {
             builder = builder.visit(
                     Advice.to(TracingAdvice.class)
-                            .on(ElementMatchers.isMethod()
+                            .on(isMethod()
                                     .and(ElementMatchers.any()).and(ElementMatchers.not(ElementMatchers.nameStartsWith("main")))));
 
-            builder.method(ElementMatchers.named("invokeForRequest"));
+            builder.method(named("invokeForRequest"));
             return builder;
         };
 
-        agentBuilder = agentBuilder.type(ElementMatchers.named("org.springframework.web.method.support.InvocableHandlerMethod"))
-
-                .transform(transformer).asDecorator();
+        agentBuilder = agentBuilder.type(named("org.springframework.web.method.support.InvocableHandlerMethod"))
+                .transform(transformer);
 
         //监听
         AgentBuilder.Listener listener = new AgentBuilder.Listener() {
@@ -67,17 +100,7 @@ public class GuideAgent {
 
         };
 
-        agentBuilder.with(listener).installOn(inst);
-
-    }
-
-    //如果代理类没有实现上面的方法，那么 JVM 将尝试调用该方法
-    public static void premain(String agentArgs) {
-    }*/
-
-    public static void premain(String agentArgs, Instrumentation instrumentation) {
-        ClassFileTransformer transformer = new TlTransformer();
-        instrumentation.addTransformer(transformer, true);
+        agentBuilder.with(listener).installOn(instrumentation);
     }
 
 }
