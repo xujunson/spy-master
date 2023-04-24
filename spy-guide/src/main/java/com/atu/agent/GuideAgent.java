@@ -1,5 +1,6 @@
 package com.atu.agent;
 
+import com.atu.aop.TlTransformer;
 import com.atu.aop.TracingAdvice;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
@@ -9,6 +10,7 @@ import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
 
+import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 
 /**
@@ -18,7 +20,7 @@ import java.lang.instrument.Instrumentation;
  **/
 public class GuideAgent {
 
-    public static void premain(String agentArgs, Instrumentation inst) {
+   /* public static void premain(String agentArgs, Instrumentation inst) {
         System.out.println("this is my agent：" + agentArgs);
         AgentBuilder agentBuilder = new AgentBuilder.Default();
 
@@ -71,6 +73,11 @@ public class GuideAgent {
 
     //如果代理类没有实现上面的方法，那么 JVM 将尝试调用该方法
     public static void premain(String agentArgs) {
+    }*/
+
+    public static void premain(String agentArgs, Instrumentation instrumentation) {
+        ClassFileTransformer transformer = new TlTransformer();
+        instrumentation.addTransformer(transformer, true);
     }
 
 }
