@@ -1,7 +1,8 @@
 package com.atu.juc;
 
-import com.atu.common.utils.TraceContextUtil;
 import com.atu.context.TraceContext;
+import com.atu.context.TraceContextHolder;
+import org.slf4j.MDC;
 
 /**
  * @author: Tom
@@ -18,12 +19,11 @@ public class TraceRunnable implements Runnable {
     }
     @Override
     public void run() {
-        Object backup = TraceContextUtil.backupAndSet(this.context);
-
+        MDC.put("traceId", TraceContextHolder.getTraceId());
         try {
             this.runnable.run();
         } finally {
-            TraceContextUtil.restoreBackup(backup);
+            MDC.remove("traceId");
         }
     }
 
