@@ -1,6 +1,5 @@
 package com.atu.juc;
 
-import com.atu.context.TraceContext;
 import com.atu.context.TraceContextHolder;
 import org.slf4j.MDC;
 
@@ -10,8 +9,6 @@ import org.slf4j.MDC;
  * @description: TODO
  **/
 public class TraceRunnable implements Runnable {
-    //在初始化TraceRunnable时会获取调用线程的上下文
-    private final Object context = TraceContext.getContext();
     private final Runnable runnable;
 
     public TraceRunnable(Runnable runnable) {
