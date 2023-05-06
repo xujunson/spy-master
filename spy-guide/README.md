@@ -21,6 +21,8 @@ spy-master
  - ClassNotFoundException是在运行期间（runtime）无法找到指定的类，即程序已经启动运行，而在某个时刻需要使用某个类时，发现无法找到该类。这通常是由于类名拼写错误、类所在的包路径不正确、或者类文件缺失等原因导致的。
  - 而NoClassDefFoundError是在类加载期间（class loading）无法找到某个类的定义，即在程序启动运行之前，在进行类加载时就已经发生错误。这通常是由于类路径或者依赖的库发生了变化，或者类文件被破坏或者删除等原因导致的。
 
+https://www.cnblogs.com/hainange/p/6334011.html
+
 [Springboot上运行javaagent时出现NoClassDefFoundError错误的分析和解决 ](https://juejin.cn/post/7067363361368834061#heading-26)
 [接入javaagent项目报错NoClassDefFoundError](https://www.jianshu.com/p/a36a35b66fab)
 ### ThreadLocal VS InheritableThreadLocal VS TransmittableThreadLocal
