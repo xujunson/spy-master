@@ -13,18 +13,9 @@ spy-master
 ## 问题
  - 为什么跨线程不能透传traceId
  - 类加载顺序：Bootstrap、ExtClassLoader、AppClassLoader，三者之间的关系
- - 为什么会报 NoClassDefFoundError 问题？ClassNotFoundException 和 NoClassDefFoundError区别
+ - 为什么会报 NoClassDefFoundError 问题？ClassNotFoundException 和 NoClassDefFoundError区别?
  - InheritableThreadLocal、TransmittableThreadLocal和ThreadLocal有什么区别？
 
-### NoClassDefFoundError问题
-
- - ClassNotFoundException是在运行期间（runtime）无法找到指定的类，即程序已经启动运行，而在某个时刻需要使用某个类时，发现无法找到该类。这通常是由于类名拼写错误、类所在的包路径不正确、或者类文件缺失等原因导致的。
- - 而NoClassDefFoundError是在类加载期间（class loading）无法找到某个类的定义，即在程序启动运行之前，在进行类加载时就已经发生错误。这通常是由于类路径或者依赖的库发生了变化，或者类文件被破坏或者删除等原因导致的。
-
-https://www.cnblogs.com/hainange/p/6334011.html
-
-[Springboot上运行javaagent时出现NoClassDefFoundError错误的分析和解决 ](https://juejin.cn/post/7067363361368834061#heading-26)
-[接入javaagent项目报错NoClassDefFoundError](https://www.jianshu.com/p/a36a35b66fab)
 ### ThreadLocal VS InheritableThreadLocal VS TransmittableThreadLocal
 
 > ThreadLocal
@@ -62,5 +53,3 @@ TTL的本质是使用了Java的动态代理机制，在拦截线程操作的同�
 由于线程池的复用机制，“子线程”只会复制一次。要支持线程池中能访问提交任务线程的本地变量，
 其实只需要在父线程在向线程池提交任务时复制父线程的上下环境，那在子线程中就能够如愿访问到父线程中的本地遍历，
 实现本地环境变量在线程调用之中的透传，实现链路跟踪，这也就是 TransmittableThreadLocal 最本质的实现原理。
-
-
