@@ -17,6 +17,15 @@ spy-master
  - 为什么会报 NoClassDefFoundError 问题？ClassNotFoundException 和 NoClassDefFoundError区别?
  - InheritableThreadLocal、TransmittableThreadLocal和ThreadLocal有什么区别？
 
+## 注意事项
+【项目结构和jar包隔离】：使用自定义加载器加载jar包，避免出现代码污染。
+简单来说，业务代码是由应用类加载器加载，我们的代码由自定义的加载器加载，
+一个类加载器加载的类只能引用同一个加载器加载的类和其父加载器加载的类。
+所有自定义加载器加载的类不会影响到业务代码。
+
+Tomcat就是采用了这种方式，来隔离不同的应用，我们知道Tomcat本身是一个java应用，本身需要引用一些jar包，
+而且一个Tomcat可以部署多个web应用，能够实现这些项目不互相干扰的方式就是类加载器隔离。
+
 ### ThreadLocal VS InheritableThreadLocal VS TransmittableThreadLocal
 
 > ThreadLocal
