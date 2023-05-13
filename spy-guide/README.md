@@ -9,6 +9,7 @@ spy-master
 
 [一次「找回」TraceId的问题分析与过程思考](https://mp.weixin.qq.com/s/T7P2-tiroXWI9xd8FhsuFA)
 
+[证明：子类加载器可以获取父类加载器加载的类，反之则不行](https://blog.csdn.net/qq_20846769/article/details/100026116)
 
 ## 问题
  - 为什么跨线程不能透传traceId
